@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ class CommonErrors {
 		this->getCommonError();
 	}
 		
-	getCommonError(){
+	void getCommonError(){
 		string error = this->error;
 	   	if(error =="invalid_command_error") {
 		   	cout << "Invalid command "  << endl;
@@ -32,7 +33,7 @@ class CommonErrors {
 	}
 };
 class IntVector {
-	private:
+	public:
 		int limit;
 		int quantity;
 		int *arr;
@@ -43,7 +44,7 @@ class IntVector {
 		arr = new int[limit];
 	}
 	
-	push(int value, int position){
+	void push(int value, int position){
 		if(position >= 0 ){
 			if(position < limit){
 				if(quantity <= limit){
@@ -65,7 +66,7 @@ class IntVector {
 		}
 	}
 	
-	remove(int position){
+	void remove(int position){
 		if(position >= 0 ){
 			if(position < limit){
 				
@@ -79,7 +80,7 @@ class IntVector {
 			new CommonErrors("invalid_position");
 		}
 	}
-	
+		
 	int limits(){
 		return this->limit;
 	}
@@ -88,28 +89,68 @@ class IntVector {
 		return this->quantity;
 	}
 	
+	int get(int i){
+		if(i < this->limit && i >=0){
+			return this->arr[i];
+		}else {
+			return -1;
+		}
+		
+	}
+	
+	bool change(int v, int i){
+		if(i >= 0 && this->quantity < i){
+			this->arr[i] = v;
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+	
+	bool push(int n){
+		if(this->quantity < this->limit){
+			this->arr[this->quantity] = n;
+			this->quantity = this->quantity + 1;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	void init(){
+		for(int i = 0; i < this->limit; i++){
+			change(-1, i);
+		}
+	}
+	
 };
 
 class MaxHeap {
-	private:
-		IntVector *arr;
+
+	public: 
+	IntVector *arr;
+	
+	MaxHeap(){
+		this->arr = new IntVector();
+	}
 		
-	getParent(int i){
+	int getParent(int i){
 		if(i >= 0){
 			return (int((i+1)/2)/-1);
 		}
 		return -1;
 	}
 	
-	getLeft(int i){
-		if(i >= 0 && i < arr->quantity()){
+	int getLeft(int i){
+		if(i >= 0 && i < arr->length()){
 			return 2*i+1;
 		}
 		return -1;
 	}
 	
-	getRight(int i){
-		if(i >= 0 && i < arr->quantity()){
+	int getRight(int i){
+		if(i >= 0 && i < arr->length()){
 			return 2*i+2;
 		}
 		return -1;
@@ -120,13 +161,13 @@ class MaxHeap {
 		int left = getLeft(i);
 		int right = getRight(i);
 		
-		if(left < arr->quantity() && left >= 0){
+		if(left < arr->length() && left >= 0){
 			if(arr->get(bigger) < arr->get(left)){
 				bigger = left;
 			}
 		}
 		
-		if(right < arr->quantity() && right >= 0){
+		if(right < arr->length() && right >= 0){
 			if(arr->get(bigger) < arr->get(right)){
 				bigger = right;
 			}
@@ -137,7 +178,7 @@ class MaxHeap {
 	
 	int getHeight(){
 		int height = 1;
-		int quantity = arr->quantity();
+		int quantity = arr->length();
 		while((quantity / 2) > 0){
 			height = height + 1;
 		}
@@ -153,76 +194,175 @@ class MaxHeap {
 		return elements;
 	}
 		
-	public:
-		MaxHeap(){
-			this->arr = new IntVector();
-		}
-		
-		string print(){
-			int height = 0;
-			int index = 0;
-			for(int i=0; i < height; i++){
-				cout << "" << endl;
-				for(int j = 0; e < level(i); e++){
-					if(index < arr->quantity()){
-						arr->get(index);
-						index = index + 1;
-						if(j < level(i) - 1){
-							cout << " " << endl;
-						}
+	void print(){
+		int height = 0;
+		int index = 0;
+		for(int i=0; i < height; i++){
+			cout << "" << endl;
+			for(int j = 0; j < this->getLevel(i); j++){
+				if(index < arr->length()){
+					arr->get(index);
+					index = index + 1;
+					if(j < this->getLevel(index) - 1){
+						cout << " " << endl;
 					}
 				}
 			}
 		}
+	}
+	
+	bool changePosition(int i, int j){
+		int quantity = arr->length();
+		if(quantity > i && quantity < j){
+			int elementI = arr->get(i);
+			int elementJ = arr->get(j);
+			
+			arr->change(elementJ, i);
+			arr->change(elementI, j);
+				
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	bool orderInsert(int i){
+		if(i >= 0){
+			int j = this->getParent(i);
+			if(j != -1){
+				if(arr->get(j) < arr->get(i)){
+					changePosition(i, j);
+					orderInsert(j);					
+				}
+			}
+			return true;
+		}else{
+			return false;
+		}		
+	}
+
+	bool orderDelete(int i){
+		if(i >= 0){
+			int j = this->getBiggerThanPosition(i);
+			if(j != i){
+				if(arr->get(j) < arr->get(i)){
+					changePosition(i, j);
+					orderDelete(j);					
+				}
+			}
+			return true;
+		}else{
+			return false;
+		}		
+	}
+				
+	bool push(int n){
+		if(this->arr->push(n) != false){				
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	int getByPosition(int i){
+		return 	arr->get(i);
+	}
+	
+	void reboot(){
+		if(arr->quantity > 0){
+			arr->quantity = 0;
+			arr->init();
+		}
+	}
+	
+	int get(int i){
+		return arr->get(i);
+	}
+	
+	void remove(){
+		if(arr->quantity > 0){
+			if(arr->quantity == 1){
+				int position = this->arr->quantity - 1;
+				this->arr->change(-1, position);
+				arr->quantity = arr->quantity - 1;
+			}else{
+				int position = arr->quantity - 1;
+				int value = this->get(position);
+				this->arr->change(value, 0);
+				this->arr->change(-1, position);
+				arr->quantity = arr->quantity - 1;
+			}
+		}
+	}
+	
+	int limits(){
+		return arr->limits();
+	}
+	
+	int quantity(){
+		return arr->length();
+	}
+
 };
 class Commands{
 	private: 
 	string cmd; 
 	string arg;
-	* arr;
-	
-	Commands(){
-		cmd = "";
-		arg = "";
-	}
+	MaxHeap * arr;
+
 	
 	void insert(){
 		int j;
-		if(this->arg != " "){
-			while(this->arg >> j){
-				arr->insert(j)
+		string arg2 = this->arg;
+		if(arg2 != " "){
+			istringstream iss(arg2);
+			while(iss >> j){
+				arr->push(j);
 			}
 		}
 	}
 	
 	void printType(string type){
 		if(type =="max"){
-			int max = arr->getMax();
+			int max = arr->get(0);
 			cout << "Max= " << max << endl;
 		}else if(type == "all"){
 			arr->print();
 		}
 	}
 	
-	void dim(){
-		
+	void dim(string type){
+		if(type == "max"){
+			cout << arr->limits() << endl;
+		}else if(type == "all"){
+			cout << arr->quantity() << endl;
+		}
 	}
 	
-	void dimMax(){
-		
-	}
 	
-	void removeAll(){
-	}
-	
-	void remove(){
-		
+	void remove(string type){
+		if(type ==  "all"){
+			arr->reboot();
+		}else if(type == "one"){
+			arr->remove();
+		}
 	}
 	
 	void heapifyUp(){
+		int h;
+		if(this->arg !=" "){
+			IntVector * temp = new IntVector();
+			int count = 0;
+			istringstream j(this->arg);
+			while(j >> h){
+				count++;
+				
+			}
+		}
 	}
 	
 	void redimMax(){
+		
 	}
 	
 	public:
@@ -254,13 +394,13 @@ class Commands{
 		}else if(command == "print"){
 			printType("all");
 		}else if(command == "dim"){
-			dim();
+			dim("all");
 		}else if(command == "dim_max"){
-			dimMax();
+			dim("max");
 		}else if(command == "clear"){
-			removeAll();
+			remove("all");
 		}else if(command == "delete"){
-			 remove();
+			 remove("one");
 		}else if(command == "heapify_up"){
 			heapifyUp();
 		}else if(command == "redim_max"){
