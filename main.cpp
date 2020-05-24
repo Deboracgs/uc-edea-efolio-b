@@ -4,17 +4,20 @@
 
 using namespace std;
 
+// classe para exibi errors
 class CommonErrors {
 	private:
 		string error;
 		
 	public: 
 	
+	// construtor
 	CommonErrors(string err){
 		error = err;
 		this->getCommonError();
 	}
-		
+	
+	// função para pegar o erro pela key	
 	void getCommonError(){
 		string error = this->error;
 	   	if(error =="invalid_command_error") {
@@ -32,18 +35,22 @@ class CommonErrors {
 	    }
 	}
 };
+
+//classe de vetor do tipoo int
 class IntVector {
 	public:
 		int limit;
 		int quantity;
 		int *arr;
 		
+	// construtor
 	IntVector(){
 		limit = 15;
 		quantity = 0;
 		arr = new int[limit];
 	}
 	
+	// insere o valor no array na posição informada
 	void push(int value, int position){
 		if(position >= 0 ){
 			if(position < limit){
@@ -65,7 +72,7 @@ class IntVector {
 			new CommonErrors("invalid_position");
 		}
 	}
-	
+	// remove item no array pela posição informada
 	void remove(int position){
 		if(position >= 0 ){
 			if(position < limit){
@@ -80,15 +87,18 @@ class IntVector {
 			new CommonErrors("invalid_position");
 		}
 	}
-		
+	
+	// pega a quantidade limite do array
 	int limits(){
 		return this->limit;
 	}
 	
+	// pega a quantitdade total que esta no array
 	int length(){
 		return this->quantity;
 	}
 	
+	// pega o item no array pela posição
 	int get(int i){
 		if(i < this->limit && i >=0){
 			return this->arr[i];
@@ -98,6 +108,7 @@ class IntVector {
 		
 	}
 	
+	// altera o valor de uma posição
 	bool change(int v, int i){
 		if(i >= 0 && this->quantity < i){
 			this->arr[i] = v;
@@ -108,6 +119,7 @@ class IntVector {
 		
 	}
 	
+	//  insere valor na ultima posição vazia
 	bool push(int n){
 		if(this->quantity < this->limit){
 			this->arr[this->quantity] = n;
@@ -118,6 +130,7 @@ class IntVector {
 		return false;
 	}
 	
+	// inicia com valores negativos/vazios
 	void init(){
 		for(int i = 0; i < this->limit; i++){
 			change(-1, i);
@@ -126,15 +139,18 @@ class IntVector {
 	
 };
 
+// class maxheap
 class MaxHeap {
 
 	public: 
 	IntVector *arr;
 	
+	// construtor que inicializa com um vetor
 	MaxHeap(){
 		this->arr = new IntVector();
 	}
 		
+	// pega a posição pai
 	int getParent(int i){
 		if(i >= 0){
 			return (int((i+1)/2)/-1);
@@ -142,6 +158,7 @@ class MaxHeap {
 		return -1;
 	}
 	
+	// pega a posição esquerda
 	int getLeft(int i){
 		if(i >= 0 && i < arr->length()){
 			return 2*i+1;
@@ -149,6 +166,7 @@ class MaxHeap {
 		return -1;
 	}
 	
+	// pega a posição direita
 	int getRight(int i){
 		if(i >= 0 && i < arr->length()){
 			return 2*i+2;
@@ -156,6 +174,7 @@ class MaxHeap {
 		return -1;
 	}
 	
+	// pega o maior na esquerda ou direita, baseado no pai
 	int getBiggerThanPosition(int i){
 		int bigger = i;
 		int left = getLeft(i);
@@ -176,6 +195,7 @@ class MaxHeap {
 		return bigger;
 	}
 	
+	// pega altura da arvore
 	int getHeight(){
 		int height = 1;
 		int quantity = arr->length();
@@ -186,6 +206,8 @@ class MaxHeap {
 		return height;
 	}
 	
+	
+	// pega o nivel da arvore
 	int getLevel(int i){
 		int elements = 1;
 		for(int j=0; j<i; j++){
@@ -193,7 +215,8 @@ class MaxHeap {
 		}
 		return elements;
 	}
-		
+	
+	// exibe a arvore	
 	void print(){
 		int height = 0;
 		int index = 0;
@@ -211,6 +234,8 @@ class MaxHeap {
 		}
 	}
 	
+	
+	// muda a posição do elemento i com o elemento j
 	bool changePosition(int i, int j){
 		int quantity = arr->length();
 		if(quantity > i && quantity < j){
@@ -226,6 +251,7 @@ class MaxHeap {
 		}
 	}
 	
+	// muda a posição da arvore conforme o valor que for inserido
 	bool orderInsert(int i){
 		if(i >= 0){
 			int j = this->getParent(i);
@@ -241,6 +267,7 @@ class MaxHeap {
 		}		
 	}
 
+	// muda a posição da arvore conforme o valor for deletado
 	bool orderDelete(int i){
 		if(i >= 0){
 			int j = this->getBiggerThanPosition(i);
@@ -255,19 +282,18 @@ class MaxHeap {
 			return false;
 		}		
 	}
-				
+	
+	// insere no vetor e o retorno do vetor for true foi inserido	
 	bool push(int n){
-		if(this->arr->push(n) != false){				
-			return true;
-		}else{
-			return false;
-		}
+		return this->arr->push(n);
 	}
 	
-	int getByPosition(int i){
+	// pega a valor pela posição
+	int get(int i){
 		return 	arr->get(i);
 	}
 	
+	// reinicia o vetor 
 	void reboot(){
 		if(arr->quantity > 0){
 			arr->quantity = 0;
@@ -275,10 +301,7 @@ class MaxHeap {
 		}
 	}
 	
-	int get(int i){
-		return arr->get(i);
-	}
-	
+	// remove o valor 
 	void remove(){
 		if(arr->quantity > 0){
 			if(arr->quantity == 1){
@@ -295,10 +318,12 @@ class MaxHeap {
 		}
 	}
 	
+	// retorno a quantidade total
 	int limits(){
 		return arr->limits();
 	}
 	
+	// retorna a quantidade atual
 	int quantity(){
 		return arr->length();
 	}
@@ -310,7 +335,7 @@ class Commands{
 	string arg;
 	MaxHeap * arr;
 
-	
+	// insere o valor no vetor
 	void insert(){
 		int j;
 		string arg2 = this->arg;
@@ -322,6 +347,7 @@ class Commands{
 		}
 	}
 	
+	// imprime pelo tipo, se for max vai imprimir o maior valor na arvore, se for all imprime a arvore	
 	void printType(string type){
 		if(type =="max"){
 			int max = arr->get(0);
@@ -331,6 +357,7 @@ class Commands{
 		}
 	}
 	
+	// exibe a dimensão do vetor, se for max mostra a quantidade maxima dentro do vetor, se for all mostra a quantidade atual
 	void dim(string type){
 		if(type == "max"){
 			cout << arr->limits() << endl;
@@ -339,7 +366,7 @@ class Commands{
 		}
 	}
 	
-	
+	// remove do vetor, se for all remove tudo, se for one vai remover o ultimo valor 
 	void remove(string type){
 		if(type ==  "all"){
 			arr->reboot();
@@ -348,6 +375,7 @@ class Commands{
 		}
 	}
 	
+	// funcao heapifyup vai reiniciar a ordem no vetor
 	void heapifyUp(){
 		int h;
 		if(this->arg !=" "){
@@ -361,6 +389,7 @@ class Commands{
 		}
 	}
 	
+	// redimensiona o vetor
 	void redimMax(){
 		
 	}
@@ -371,20 +400,18 @@ class Commands{
 		this->arg = argument;
 	}
 	
-	~Commands(){
-		this->cmd = "";
-		this->arg = "";
-	}
-	
+
+	// seta o argumento recebido
 	void setArg(string arg){
 		this->arg = arg;
 	}
 
+	// seta o commando recebido
 	void setCmd(string cmd){
 		this->cmd = cmd;
 	}
 	
-
+	// pega o comendo pela key
 	void getCommand(){
 		string command = this->cmd;
 		if(command == "insert"){
@@ -415,21 +442,32 @@ class Commands{
 int main()
 {
 	string entry;
+	// inicializa o comando
 	Commands *command = new Commands("", "");
+	// enquanto tiver recebido um comando ira executar o restante
     while(getline(cin, entry)){
+    	
+    	// pelo facto do hackerrank ter strings alem dos comandos, e necessario colocar isto
         if(entry.substr(0,1) == "#" || entry == ""){
         	continue;
 		}
+		// encontra a primeira posição que tem um espaço
 		int position = entry.find(" ");
+		// pega o comando pela posição
 		string cmd  = entry.substr(0, position);
 		string arg = "";
 		
+		// verifica se a posição existe
 		if(position != -1){
+			// se existir é por que tem argumentos 
 			arg = entry.substr(position, entry.size());
 		}
 		
+		// seta o argumento no construtor 
 		command->setArg(arg);
+		// seta o comando no construtor 
 		command->setCmd(cmd);
+		// pega o comando
 		command->getCommand();
 		
     }
