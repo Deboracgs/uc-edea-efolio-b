@@ -50,6 +50,17 @@ class IntVector {
 		arr = new int[limit];
 	}
 	
+	//  insere valor na ultima posição vazia
+	bool push(int n){
+		if(this->quantity < this->limit){
+			this->arr[this->quantity] = n;
+			this->quantity = this->quantity + 1;
+			return true;
+		}
+		
+		return true;
+	}
+	
 	// insere o valor no array na posição informada
 	void push(int value, int position){
 		if(position >= 0 ){
@@ -117,17 +128,6 @@ class IntVector {
 			return false;
 		}
 		
-	}
-	
-	//  insere valor na ultima posição vazia
-	bool push(int n){
-		if(this->quantity < this->limit){
-			this->arr[this->quantity] = n;
-			this->quantity = this->quantity + 1;
-			return true;
-		}
-		
-		return false;
 	}
 	
 	// inicia com valores negativos/vazios
@@ -199,10 +199,14 @@ class MaxHeap {
 	int getHeight(){
 		int height = 1;
 		int quantity = arr->length();
-		while((quantity / 2) > 0){
+		bool check = (quantity / 2) > 0;
+		while(check){
 			height = height + 1;
+			if(height > quantity){
+				return false;
+			}
+				
 		}
-		
 		return height;
 	}
 	
@@ -218,8 +222,10 @@ class MaxHeap {
 	
 	// exibe a arvore	
 	void print(){
-		int height = 0;
+		cout << "chega aqui" << endl;
+		int height = this->getHeight();
 		int index = 0;
+		cout << "height" << height  << endl;
 		for(int i=0; i < height; i++){
 			cout << "" << endl;
 			for(int j = 0; j < this->getLevel(i); j++){
@@ -285,7 +291,7 @@ class MaxHeap {
 	
 	// insere no vetor e o retorno do vetor for true foi inserido	
 	bool push(int n){
-		return this->arr->push(n);
+		return arr->push(n);
 	}
 	
 	// pega a valor pela posição
@@ -353,6 +359,7 @@ class Commands{
 			int max = arr->get(0);
 			cout << "Max= " << max << endl;
 		}else if(type == "all"){
+			cout << type << endl;
 			arr->print();
 		}
 	}
@@ -398,6 +405,7 @@ class Commands{
 	Commands(string command, string argument){
 		this->cmd = command;
 		this->arg = argument;
+		this->arr = new MaxHeap();
 	}
 	
 
@@ -472,7 +480,6 @@ int main()
 		
     }
 
-    system("pause");
     return 0;
 }
 
