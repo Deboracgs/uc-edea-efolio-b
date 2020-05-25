@@ -266,8 +266,9 @@ class MaxHeap {
 	
 	// muda a posição da arvore conforme o valor que for inserido
 	bool orderInsert(int i){
-		if(i >= 0){
+		if(i > 0){
 			int j = this->getParent(i);
+			cout << "j" << j << endl;
 			if(j != -1){
 				if(arr->get(j) < arr->get(i)){
 					changePosition(i, j);
@@ -296,10 +297,19 @@ class MaxHeap {
 		}		
 	}
 	
+	// reordena
+	
+	void reorder(){
+		for(int i= 0; i >= arr->length(); i++){
+			orderInsert(i);
+		}
+	}
+	
 	// insere no vetor e o retorno do vetor for true foi inserido	
 	bool push(int n){
-		updateHeight(n);
+
 		return arr->push(n);
+	
 	}
 	
 	// pega a valor pela posição
@@ -358,6 +368,9 @@ class Commands{
 			while(iss >> j){
 				arr->push(j);
 			}
+			
+			arr->reorder();
+		
 		}
 	}
 	
