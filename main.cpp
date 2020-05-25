@@ -223,6 +223,7 @@ class MaxHeap {
 	
 	// exibe a arvore	
 	string print(){
+		reorder();
 		int height = getHeight();
 		int index = 0;
 		string concat;
