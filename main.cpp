@@ -1,6 +1,7 @@
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -144,10 +145,12 @@ class MaxHeap {
 
 	public: 
 	IntVector *arr;
+	int height;
 	
 	// construtor que inicializa com um vetor
 	MaxHeap(){
 		this->arr = new IntVector();
+		height = 0;
 	}
 		
 	// pega a posição pai
@@ -195,18 +198,16 @@ class MaxHeap {
 		return bigger;
 	}
 	
+	void updateHeight(int i){
+	
+	}
+	
+	
 	// pega altura da arvore
 	int getHeight(){
-		int height = 1;
-		int quantity = arr->length();
-		bool check = (quantity / 2) > 0;
-		while(check){
-			height = height + 1;
-			if(height > quantity){
-				return false;
-			}
-				
-		}
+	
+		int height = ceil(log2(this->quantity() + 1)) ;
+		
 		return height;
 	}
 	
@@ -221,23 +222,29 @@ class MaxHeap {
 	}
 	
 	// exibe a arvore	
-	void print(){
-		cout << "chega aqui" << endl;
-		int height = this->getHeight();
+	string print(){
+		int height = getHeight();
 		int index = 0;
-		cout << "height" << height  << endl;
+		string concat;
+		
 		for(int i=0; i < height; i++){
-			cout << "" << endl;
+			concat += "\n";
 			for(int j = 0; j < this->getLevel(i); j++){
-				if(index < arr->length()){
-					arr->get(index);
+				int length = arr->length();
+				bool check = index < length;
+				if(check){
+					int number = arr->get(index);
+					ostringstream s;
+					s << number;
+					concat += s.str();
 					index = index + 1;
 					if(j < this->getLevel(index) - 1){
-						cout << " " << endl;
+						concat += " ";
 					}
 				}
 			}
 		}
+		return concat;
 	}
 	
 	
@@ -291,6 +298,7 @@ class MaxHeap {
 	
 	// insere no vetor e o retorno do vetor for true foi inserido	
 	bool push(int n){
+		updateHeight(n);
 		return arr->push(n);
 	}
 	
@@ -359,8 +367,9 @@ class Commands{
 			int max = arr->get(0);
 			cout << "Max= " << max << endl;
 		}else if(type == "all"){
-			cout << type << endl;
-			arr->print();
+			string heap = 	arr->print();
+			cout << "Heap=" << heap << endl;
+		
 		}
 	}
 	
